@@ -60,12 +60,13 @@ class _LandingPageState extends State<LandingPage> {
                 ? GestureDetector(
                     onTap: () {
                       setState(() {
-                        if (index == 1) {
-                          index = 0;
-                        } else {
+                        if (index == 0) {
                           index = 1;
+                        } else {
+                          if (_imageFileList!.length == 2) index = 0;
                         }
                       });
+                      print(index);
                     },
                     onDoubleTap: () {
                       setState(() {
