@@ -1,6 +1,6 @@
 name: image_video_picker
 description: Pick Images and video from the gallery and show them in the app.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
@@ -9,6 +9,8 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.2
+  image_picker: ^0.8.4+2
+  video_player: ^2.2.5
 
 dev_dependencies:
   flutter_test:
