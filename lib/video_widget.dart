@@ -1,11 +1,14 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:video_player/video_player.dart';
 
 class VideoWidget extends StatefulWidget {
-  final String _path;
+  final File _path;
 
   const VideoWidget({
-    required String path,
+    required File path,
     Key? key,
   })  : _path = path,
         super(key: key);
@@ -19,7 +22,7 @@ class _VideoAppState extends State<VideoWidget> {
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.asset(widget._path)
+    _controller = VideoPlayerController.file(widget._path)
       ..addListener(() => setState(() {}))
       ..setLooping(true)
       ..initialize().then((_) => _controller.play());

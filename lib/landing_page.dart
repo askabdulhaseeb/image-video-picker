@@ -74,7 +74,7 @@ class _LandingPageState extends State<LandingPage> {
                       });
                     },
                     child: (isVideo)
-                        ? VideoWidget(path: _videoFile!.path)
+                        ? VideoWidget(path: File(_videoFile!.path))
                         : Image.file(
                             File(_imageFileList![index].path),
                             fit: BoxFit.cover,
