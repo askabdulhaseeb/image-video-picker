@@ -25,12 +25,36 @@ class _VideoAppState extends State<VideoWidget> {
     _controller = VideoPlayerController.file(widget._path)
       ..addListener(() => setState(() {}))
       ..setLooping(true)
-      ..initialize().then((_) => _controller.play());
+      ..initialize().then((_) => _controller.pause());
   }
 
   @override
   Widget build(BuildContext context) {
-    return VideoPlayer(_controller);
+    return Stack(
+      children: [
+        VideoPlayer(_controller),
+        Center(
+          child: IconButton(
+            onPressed: () {
+              setState(() {
+                if (_controller.value.isPlaying) {
+                  _controller.pause();
+                } else {
+                  _controller.play();
+                }
+              });
+            },
+            iconSize: 24,
+            icon: Icon(
+              (_controller.value.isPlaying == true)
+                  ? Icons.pause
+                  : Icons.play_arrow,
+              color: Colors.white,
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   @override

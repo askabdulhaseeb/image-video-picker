@@ -1,8 +1,7 @@
 import 'dart:io';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:image_video_picker/video_widget.dart';
-import 'package:video_player/video_player.dart';
 
 class LandingPage extends StatefulWidget {
   const LandingPage({Key? key}) : super(key: key);
@@ -13,13 +12,20 @@ class LandingPage extends StatefulWidget {
 class _LandingPageState extends State<LandingPage> {
   int lastTap = 0;
   int consecutiveTaps = 0;
-  List<XFile>? _imageFileList;
-  XFile? _videoFile;
   int index = 0;
-  bool _show = false;
+  List<PlatformFile> _files = <PlatformFile>[];
   bool isVideo = false;
   @override
   Widget build(BuildContext context) {
+    void _onTap() {
+      index++;
+      if (index == _files.length) {
+        index = 0;
+        return;
+      }
+      setState(() {});
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Image Video Picker'),
@@ -29,21 +35,19 @@ class _LandingPageState extends State<LandingPage> {
           int now = DateTime.now().millisecondsSinceEpoch;
           if (now - lastTap < 1000) {
             consecutiveTaps++;
-            if (consecutiveTaps == 3) {
-              try {
-                final ImagePicker _picker = ImagePicker();
-                final pickedFileList = await _picker.pickMultiImage();
-                final video =
-                    await _picker.pickVideo(source: ImageSource.gallery);
-                setState(() {
-                  _imageFileList = pickedFileList;
-                  _videoFile = video;
-                  _show = true;
-                });
-                print('Length: ${_imageFileList!.length}');
-              } catch (e) {
-                print(e.toString());
-              }
+            if (consecutiveTaps == 2) {
+              final FilePickerResult? _result =
+                  await FilePicker.platform.pickFiles(
+                allowMultiple: true,
+                // type: FileType.any,
+                // allowedExtensions: ['.jpeg', '.jpg', '.mp4', '.mov'],
+              );
+              if (_result == null) return;
+              _files = _result.files;
+              setState(() {});
+              _files.forEach((element) {
+                print(element.extension);
+              });
             }
           } else {
             consecutiveTaps = 0;
@@ -56,30 +60,26 @@ class _LandingPageState extends State<LandingPage> {
             height: 200,
             color: Colors.green,
             alignment: Alignment.center,
-            child: (_show)
-                ? GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        if (index == 0) {
-                          index = 1;
-                        } else {
-                          if (_imageFileList!.length == 2) index = 0;
-                        }
-                      });
-                      print(index);
-                    },
-                    onDoubleTap: () {
-                      setState(() {
-                        isVideo = !isVideo;
-                      });
-                    },
-                    child: (isVideo)
-                        ? VideoWidget(path: File(_videoFile!.path))
-                        : Image.file(
-                            File(_imageFileList![index].path),
-                            fit: BoxFit.cover,
-                          ),
-                  )
+            child: (_files.isNotEmpty)
+                ? (_files[index].extension == '.jpeg' ||
+                        _files[index].extension == '.jpg')
+                    ? GestureDetector(
+                        onTap: _onTap,
+                        child: Image.file(
+                          File(_files[index].path!),
+                          fit: BoxFit.cover,
+                        ),
+                      )
+                    : (_files[index].extension == '.mp4' ||
+                            _files[index].extension == '.mov')
+                        ? GestureDetector(
+                            onDoubleTap: _onTap,
+                            child: VideoWidget(path: File(_files[index].path!)),
+                          )
+                        : GestureDetector(
+                            onTap: _onTap,
+                            child: const Text('Invalid File Selected'),
+                          )
                 : const Icon(Icons.attachment_sharp),
           ),
         ),
