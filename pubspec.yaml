@@ -9,7 +9,6 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.2
-  image_picker: ^0.8.4+2
   video_player: ^2.2.5
 
   file_picker: ^4.1.4

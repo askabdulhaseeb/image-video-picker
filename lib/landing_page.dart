@@ -1,8 +1,8 @@
 import 'dart:io';
-import 'package:file_picker/file_picker.dart';
-import 'package:file_picker/src/file_picker_io.dart';
 import 'package:flutter/material.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:image_video_picker/video_widget.dart';
+import 'package:file_picker/src/file_picker_io.dart';
 
 class LandingPage extends StatefulWidget {
   const LandingPage({Key? key}) : super(key: key);
