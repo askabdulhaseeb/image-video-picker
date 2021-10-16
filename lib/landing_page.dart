@@ -18,12 +18,28 @@ class _LandingPageState extends State<LandingPage> {
   bool isVideo = false;
   @override
   Widget build(BuildContext context) {
-    void _onTap() {
-      index++;
-      if (index == _files.length) {
-        index = 0;
-        return;
+    void _onTap() async {
+      int now = DateTime.now().millisecondsSinceEpoch;
+      if (now - lastTap < 1000) {
+        consecutiveTaps++;
+        if (consecutiveTaps == 2) {
+          final FilePickerResult? _result = await FilePicker.platform.pickFiles(
+            allowMultiple: true,
+            type: FileType.custom,
+            allowedExtensions: ['jpeg', 'jpg', 'mp4', 'mov'],
+          );
+          if (_result == null) return;
+          _files = _result.files;
+        }
+      } else {
+        consecutiveTaps = 0;
+        index++;
+        if (index == _files.length - 1) {
+          index = 0;
+          return;
+        }
       }
+      lastTap = now;
       setState(() {});
     }
 

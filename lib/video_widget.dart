@@ -42,12 +42,15 @@ class _VideoAppState extends State<VideoWidget> {
                 }
               });
             },
-            iconSize: 24,
-            icon: Icon(
-              (_controller.value.isPlaying == true)
-                  ? Icons.pause
-                  : Icons.play_arrow,
-              color: Colors.white,
+            iconSize: 40,
+            icon: CircleAvatar(
+              radius: 30,
+              child: Icon(
+                (_controller.value.isPlaying == true)
+                    ? Icons.pause
+                    : Icons.play_arrow,
+                color: Colors.white,
+              ),
             ),
           ),
         ),
