@@ -29,14 +29,20 @@ class _LandingPageState extends State<LandingPage> {
             type: FileType.custom,
             allowedExtensions: ['jpeg', 'jpg', 'mp4', 'mov'],
           );
-          if (_result == null) return;
+          if (_result == null) {
+            setState(() {});
+            return;
+          }
+          _files.clear();
           _files = _result.files;
         }
       } else {
         consecutiveTaps = 0;
         index++;
         if (index == _files.length) {
-          index = 0;
+          setState(() {
+            index = 0;
+          });
           return;
         }
       }
@@ -58,52 +64,46 @@ class _LandingPageState extends State<LandingPage> {
             );
             if (_result == null) return;
             _files = _result.files;
-            setState(() {});
           }
         } else {
           consecutiveTaps = 0;
         }
         lastTap = now;
+        setState(() {});
       },
       child: Scaffold(
-        body: Center(
-          child: (_files.isNotEmpty)
-              ? (_files[index].extension == 'jpeg' ||
-                      _files[index].extension == 'jpg')
-                  ? GestureDetector(
-                      onTap: _onTap,
-                      child: Image.file(
+        body: GestureDetector(
+          onTap: _onTap,
+          child: Center(
+            child: (_files.isNotEmpty)
+                ? (_files[index].extension == 'jpeg' ||
+                        _files[index].extension == 'jpg')
+                    ? Image.file(
                         File(_files[index].path!),
                         fit: BoxFit.cover,
-                      ),
-                    )
-                  : (_files[index].extension == 'mp4' ||
-                          _files[index].extension == 'mov')
-                      ? GestureDetector(
-                          onDoubleTap: _onTap,
-                          child: VideoWidget(
+                      )
+                    : (_files[index].extension == 'mp4' ||
+                            _files[index].extension == 'mov')
+                        ? VideoWidget(
                             onDoubleTap: _onTap,
                             path: File(_files[index].path!),
-                          ),
-                        )
-                      : GestureDetector(
-                          onTap: _onTap,
-                          child: const Text('Invalid File Selected'),
-                        )
-              : Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const <Widget>[
-                    Text(
-                      'Welcome',
-                      style:
-                          TextStyle(fontSize: 42, fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      'Tap anywhere Three time to select files',
-                      style: TextStyle(color: Colors.grey),
-                    ),
-                  ],
-                ),
+                          )
+                        : const Text('Invalid File Selected')
+                : Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const <Widget>[
+                      Text(
+                        'Welcome',
+                        style: TextStyle(
+                            fontSize: 42, fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        'Tap anywhere Three time to select files',
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                    ],
+                  ),
+          ),
         ),
       ),
     );

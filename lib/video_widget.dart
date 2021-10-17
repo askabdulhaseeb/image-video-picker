@@ -29,28 +29,20 @@ class _VideoAppState extends State<VideoWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        VideoPlayer(_controller),
-        GestureDetector(
-          onTap: () {
-            setState(
-              () {
-                if (_controller.value.isPlaying) {
-                  _controller.pause();
-                } else {
-                  _controller.play();
-                }
-              },
-            );
+    return GestureDetector(
+      onTap: () {
+        setState(
+          () {
+            if (_controller.value.isPlaying) {
+              _controller.pause();
+            } else {
+              _controller.play();
+            }
           },
-          onDoubleTap: widget._onDoubleTap,
-          child: const SizedBox(
-            height: double.infinity,
-            width: double.infinity,
-          ),
-        ),
-      ],
+        );
+      },
+      onDoubleTap: widget._onDoubleTap,
+      child: VideoPlayer(_controller),
     );
   }
 
