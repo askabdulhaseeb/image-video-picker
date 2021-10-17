@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:image_video_picker/video_widget.dart';
 import 'package:file_picker/src/file_picker_io.dart';
+import 'package:open_file/open_file.dart';
 
 class LandingPage extends StatefulWidget {
   const LandingPage({Key? key}) : super(key: key);
@@ -34,7 +35,7 @@ class _LandingPageState extends State<LandingPage> {
       } else {
         consecutiveTaps = 0;
         index++;
-        if (index == _files.length - 1) {
+        if (index == _files.length) {
           index = 0;
           return;
         }
@@ -80,7 +81,10 @@ class _LandingPageState extends State<LandingPage> {
                           _files[index].extension == 'mov')
                       ? GestureDetector(
                           onDoubleTap: _onTap,
-                          child: VideoWidget(path: File(_files[index].path!)),
+                          child: VideoWidget(
+                            onDoubleTap: _onTap,
+                            path: File(_files[index].path!),
+                          ),
                         )
                       : GestureDetector(
                           onTap: _onTap,

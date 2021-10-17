@@ -4,11 +4,12 @@ import 'package:video_player/video_player.dart';
 
 class VideoWidget extends StatefulWidget {
   final File _path;
+  final VoidCallback _onDoubleTap;
 
-  const VideoWidget({
-    required File path,
-    Key? key,
-  })  : _path = path,
+  const VideoWidget(
+      {required File path, required VoidCallback onDoubleTap, Key? key})
+      : _onDoubleTap = onDoubleTap,
+        _path = path,
         super(key: key);
   @override
   _VideoAppState createState() => _VideoAppState();
@@ -31,27 +32,22 @@ class _VideoAppState extends State<VideoWidget> {
     return Stack(
       children: [
         VideoPlayer(_controller),
-        Center(
-          child: IconButton(
-            onPressed: () {
-              setState(() {
+        GestureDetector(
+          onTap: () {
+            setState(
+              () {
                 if (_controller.value.isPlaying) {
                   _controller.pause();
                 } else {
                   _controller.play();
                 }
-              });
-            },
-            iconSize: 40,
-            icon: CircleAvatar(
-              radius: 30,
-              child: Icon(
-                (_controller.value.isPlaying == true)
-                    ? Icons.pause
-                    : Icons.play_arrow,
-                color: Colors.white,
-              ),
-            ),
+              },
+            );
+          },
+          onDoubleTap: widget._onDoubleTap,
+          child: const SizedBox(
+            height: double.infinity,
+            width: double.infinity,
           ),
         ),
       ],
