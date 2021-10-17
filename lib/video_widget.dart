@@ -22,9 +22,16 @@ class _VideoAppState extends State<VideoWidget> {
   void initState() {
     super.initState();
     _controller = VideoPlayerController.file(widget._path)
-      ..addListener(() => setState(() {}))
-      ..setLooping(true)
-      ..initialize().then((_) => _controller.pause());
+      ..addListener(
+        () => setState(
+          () {
+            if (_controller.value.position == _controller.value.duration) {
+              widget._onDoubleTap();
+            }
+          },
+        ),
+      )
+      ..initialize().then((_) => _controller.play());
   }
 
   @override
