@@ -1,9 +1,9 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/services.dart';
 import 'package:image_video_picker/video_widget.dart';
 import 'package:file_picker/src/file_picker_io.dart';
-import 'package:open_file/open_file.dart';
 
 class LandingPage extends StatefulWidget {
   const LandingPage({Key? key}) : super(key: key);
@@ -12,6 +12,12 @@ class LandingPage extends StatefulWidget {
 }
 
 class _LandingPageState extends State<LandingPage> {
+  @override
+  void initState() {
+    SystemChrome.setEnabledSystemUIOverlays([]);
+    super.initState();
+  }
+
   int lastTap = 0;
   int consecutiveTaps = 0;
   int index = 0;
@@ -38,12 +44,14 @@ class _LandingPageState extends State<LandingPage> {
         }
       } else {
         consecutiveTaps = 0;
-        index++;
-        if (index == _files.length) {
-          setState(() {
-            index = 0;
-          });
-          return;
+        if (_files.isNotEmpty) {
+          index++;
+          if (index == _files.length) {
+            setState(() {
+              index = 0;
+            });
+            // return;
+          }
         }
       }
       lastTap = now;
@@ -51,59 +59,37 @@ class _LandingPageState extends State<LandingPage> {
     }
 
     return GestureDetector(
-      onTap: () async {
-        int now = DateTime.now().millisecondsSinceEpoch;
-        if (now - lastTap < 1000) {
-          consecutiveTaps++;
-          if (consecutiveTaps == 2) {
-            final FilePickerResult? _result =
-                await FilePicker.platform.pickFiles(
-              allowMultiple: true,
-              type: FileType.custom,
-              allowedExtensions: ['jpeg', 'jpg', 'mp4', 'mov'],
-            );
-            if (_result == null) return;
-            _files = _result.files;
-          }
-        } else {
-          consecutiveTaps = 0;
-        }
-        lastTap = now;
-        setState(() {});
-      },
+      onTap: _onTap,
       child: Scaffold(
-        body: GestureDetector(
-          onTap: _onTap,
-          child: Center(
-            child: (_files.isNotEmpty)
-                ? (_files[index].extension == 'jpeg' ||
-                        _files[index].extension == 'jpg')
-                    ? Image.file(
-                        File(_files[index].path!),
-                        fit: BoxFit.cover,
-                      )
-                    : (_files[index].extension == 'mp4' ||
-                            _files[index].extension == 'mov')
-                        ? VideoWidget(
-                            onDoubleTap: _onTap,
-                            path: File(_files[index].path!),
-                          )
-                        : const Text('Invalid File Selected')
-                : Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const <Widget>[
-                      Text(
-                        'Welcome',
-                        style: TextStyle(
-                            fontSize: 42, fontWeight: FontWeight.bold),
-                      ),
-                      Text(
-                        'Tap anywhere Three time to select files',
-                        style: TextStyle(color: Colors.grey),
-                      ),
-                    ],
-                  ),
-          ),
+        body: Center(
+          child: (_files.isNotEmpty)
+              ? (_files[index].extension == 'jpeg' ||
+                      _files[index].extension == 'jpg')
+                  ? Image.file(
+                      File(_files[index].path!),
+                      fit: BoxFit.cover,
+                    )
+                  : (_files[index].extension == 'mp4' ||
+                          _files[index].extension == 'mov')
+                      ? VideoWidget(
+                          onDoubleTap: _onTap,
+                          path: File(_files[index].path!),
+                        )
+                      : const Text('Invalid File Selected')
+              : Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const <Widget>[
+                    Text(
+                      'Welcome',
+                      style:
+                          TextStyle(fontSize: 42, fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      'Tap anywhere Three time to select files',
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                  ],
+                ),
         ),
       ),
     );

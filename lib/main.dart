@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:image_video_picker/landing_page.dart';
 
-void main() {
+void main()  {
   runApp(const MyApp());
 }
 
